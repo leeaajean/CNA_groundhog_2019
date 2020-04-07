@@ -17,15 +17,16 @@ def check_arg(arg):
         exit(84)
     return (period)
 
-# values = []
 number = []
-errors = []
 
 def recup_input(period):
     data = []
     i = 0
     # number = []
     difference = []
+    old_ratio = 0
+    nb_switch = 0
+    switch = 0
     while True:
         try:
             data.append(input())
@@ -35,33 +36,8 @@ def recup_input(period):
             if len(data) < period:
                 exit(84)
             # print("5 weirdest values are", sort_weird_values())
-            # try:
-            #     print("Global tendency switched %d times" % nb_switch)
-            #     errors.sort(key = sortThird, reverse = True)
-            #     errors2 = []
-            #     i = 0
-            #     while (errors[i][2] >= 2 and i < 5):
-            #         errors2.append(errors[i])
-            #         i = i + 1
-            #         errors = errors[i:]
-            #     errors2.sort(key = sortSecond, reverse = True)
-            #     errors.sort(key = sortSecond, reverse = True)
-            #     j = 0
-            #     while (i < 5):
-            #         errors2.append(errors[j])
-            #         j = j + 1
-            #         i = i + 1
-            #     i = 0
-            #     print("5 weirdest values are [", end='')
-            #     while (i < 5):
-            #         print(errors2[i][0], end='')
-            #         if (i != 4):
-            #             print(", ", end='')
-            #         i = i + 1
-            #     print("]")
-            # except:
-            #     sys.exit(84)
-            # break
+            print("Global tendency switched %d times" % nb_switch)
+            break
         else:
             try:
                 number.append(float(data[i]))
@@ -69,9 +45,21 @@ def recup_input(period):
                     difference.append(number[i] - number[i - 1])
                 if i >= period:
                     temperature_increase_average(difference, period, i)
-                    relative_temperature_evolution(number, period, i)
+                    ratio = relative_temperature_evolution(number, period, i)
+                    if ratio > 0 and old_ratio < 0:
+                        switch = 1
+                    elif ratio < 0 and old_ratio > 0:
+                        switch = 1
+                    else:
+                        switch = 0
+                    old_ratio = ratio
                 if i >= period - 1:
                     standard_deviation(period, i)
+                    if switch == 1:
+                        print("\t\ta switch occurs")
+                        nb_switch += 1
+                    else:
+                        print("")
                 else: 
                     print("g=nan\tr=nan%\ts=nan")
             except:
@@ -86,7 +74,14 @@ def temperature_increase_average(difference, period, i):
 
 def relative_temperature_evolution(number, period, i):
     result = 0
-    result = ((number[i] - number[i - period]) / number[i-period]) * 100
+    old_value = number[i-period]
+    actual_value = number[i]
+    if old_value != 0:
+        result = ((actual_value - old_value) / old_value) * 100
+        if old_value < 0:
+            result *= -1
+    else:
+        result = 999.9
     print("r=%0.0f" % result, end='')
     print("%", end='\t')
     return (result)
@@ -109,34 +104,8 @@ def standard_deviation(period, i):
     if i == (period - 1):
         print("g=nan\tr=nan%%\ts=%0.2f" % result)
     else:
-        print("s=%0.2f" % result)
+        print("s=%0.2f" % result, end = '')
         #     weird_values(number, period, i, result)
-    # aberration(len(number) - period, period, round(result, 2), moyenne)
-
-def aberration(a, period, deviation, moyenne):
-    i = 0
-    
-    # print("passe")
-    value = number[a + period - 1]
-    # print(value)
-    if value >= moyenne + deviation:
-        if moyenne + 2 * deviation == 0:
-            p = 3000000
-        else:
-            p = value / (moyenne + 2 * deviation) * 100
-        errors.append([value, p, 1])
-    elif value <= moyenne - deviation:
-        if value == 0:
-            p = 3000000
-        else:
-            p = (moyene - 2 * deviation) / value * 100
-        errors.append([value, p, 1])
-    
-def sortSecond(val):
-    return val[1]
-
-def sortThird(val):
-    return val[2]
 
 # def takeSecond(elem):
 #     return (elem[1])
