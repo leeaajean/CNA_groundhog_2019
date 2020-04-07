@@ -102,7 +102,7 @@ def standard_deviation(period, i):
     result = (deviation / period) ** 0.5
     
     if i == (period - 1):
-        print("g=nan\tr=nan%%\ts=%0.2f" % result)
+        print("g=nan\tr=nan%%\ts=%0.2f" % result, end='')
     else:
         print("s=%0.2f" % result, end = '')
         #     weird_values(number, period, i, result)
