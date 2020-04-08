@@ -40,13 +40,13 @@ def abberation(a, period, deviation):
     moyenne = calc_moyenne(a, period)
 
     value = number[a + period - 1]
-    if abs(value) <= moyenne - deviation:
+    if value <= moyenne - deviation:
         if value != 0:
             percent = (moyenne - 2 * deviation) / value * 100
         else:
             percent = 0
         weird.append([value, percent, 1])
-    elif abs(value) >= moyenne + deviation:
+    elif value >= moyenne + deviation:
         if moyenne + 2 * deviation != 0:
             percent = value / (moyenne + 2 * deviation) * 100
         else:
