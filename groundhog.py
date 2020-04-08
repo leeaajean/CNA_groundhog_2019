@@ -40,17 +40,17 @@ def abberation(a, period, deviation):
     moyenne = calc_moyenne(a, period)
 
     value = number[a + period - 1]
-    if value <= moyenne - deviation:
+    if abs(value) <= moyenne - deviation:
         if value != 0:
             percent = (moyenne - 2 * deviation) / value * 100
         else:
-            percent = 3000000
+            percent = 0
         weird.append([value, percent, 1])
-    elif value >= moyenne + deviation:
+    elif abs(value) >= moyenne + deviation:
         if moyenne + 2 * deviation != 0:
             percent = value / (moyenne + 2 * deviation) * 100
         else:
-            percent = 3000000
+            percent = 0
         weird.append([value, percent, 1])
     return (weird)
 
@@ -105,9 +105,9 @@ def recup_input(period):
                 if i >= period:
                     temperature_increase_average(difference, period, i)
                     ratio = relative_temperature_evolution(number, period, i)
-                    if ratio > 0 and old_ratio < 0:
+                    if ratio >= 0 and old_ratio < 0:
                         switch = 1
-                    elif ratio < 0 and old_ratio > 0:
+                    elif ratio < 0 and old_ratio >= 0:
                         switch = 1
                     else:
                         switch = 0
@@ -129,7 +129,7 @@ def recup_input(period):
 
 def temperature_increase_average(difference, period, i):
     moyenne = 0
-    moyenne = sum([j for j in difference[i-period:i] if j > 0]) / period
+    moyenne = sum([j for j in difference[i-period:i]]) / period
     print("g=%0.2f" % moyenne, end='\t')
     return (moyenne)
 
